@@ -5,6 +5,8 @@
 #include <exception>
 #include <stdlib.h>
 
+// sleep() is used because this program is not resource intensive and a simple and changeable timer function was needed
+
 //Make serial port handle global
 HANDLE HP3497A;
 DCB HP3497AParams = {0};
@@ -28,7 +30,7 @@ void InitializeSerialPort(){
 	HP3497A = CreateFile(L"COM1",GENERIC_READ | GENERIC_WRITE, 0,0, OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0);
 	HP3497AParams.DCBlength = sizeof(HP3497AParams);
 
-	// Do not change unless the HP3497A DIP switches have been altered
+	// Change according to the two DIP switches on the main board
 	GetCommState(HP3497A, &HP3497AParams);
 	HP3497AParams.BaudRate = CBR_9600; 
 	HP3497AParams.ByteSize = 8;
