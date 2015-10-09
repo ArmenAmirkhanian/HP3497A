@@ -17,7 +17,7 @@ double GetVoltage(char command[]){
 	DWORD bytesRead = 0;
 
 	WriteFile(HP3497A,command,5,&bytesWrite,NULL);
-	Sleep(250);
+	Sleep(250);//250 seems to work, can change if it is too slow, but may encounter read errors
 	ReadFile(HP3497A,received,15,&bytesRead,NULL);
 	Sleep(10);
 
@@ -95,22 +95,15 @@ int main(){
 
 	double Ve[10];
 	double Vss[10];
-
+// loadcal is used to display the current load on the screen to assist with setup
+// Recommended to compile two versions of this code with one having loadcal set to true
 	if(loadcal == 1){
-		/*for(int i=0;i<10;i++){
-		Ve[i] = GetVoltage("AI50\r");
-		Vss[i] = GetVoltage("AI41\r");
-		}
-		double Vout_avg = (Ve[0]*Vss[0]+Ve[1]*Vss[1]+Ve[2]*Vss[2]+Ve[3]*Vss[3]+Ve[4]*Vss[4]+Ve[5]*Vss[5]+Ve[6]*Vss[6]+Ve[7]*Vss[7]+Ve[8]*Vss[8]+Ve[9]*Vss[9])/10;
-		std::cout << Vout_avg;
-		std::cin >> loadcal;*/
 		while (loadcal<10){
-			
 			double LC1 = GetVoltage("AI40\r");
 			double LC2 = GetVoltage("AI41\r");
 			double V = GetVoltage("AI50\r");
 			system("cls");
-			std::cout << (521141*LC1*V-3506.1) << "\t" << (-570758*LC2*V+4298.2);
+			std::cout << (521141*LC1*V-3506.1) << "\t" << (-570758*LC2*V+4298.2);// These load factors must be recalculated for each new test
 		}
 		CloseHandle(HP3497A);
 		exit(0);
@@ -139,6 +132,8 @@ int main(){
 	int helper = 0;
 	int indexer = 0;
 
+//If you just want an initial reading average, hard code numData to 10 or similar
+//The section below must be coded to the particular setup used
 	for(int i = 0;i<numData;i++){
 		indexer = 0;
 		helper = 0;
